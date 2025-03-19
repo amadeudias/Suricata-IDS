@@ -1,26 +1,85 @@
-Instalando o Suricata IDS no Ubuntu Server
-Instale o Suricata no endpoint do Ubuntu. Testamos esse processo com a versão 6.0.8 e pode levar algum tempo:
+🚀 Instalando o Suricata IDS no Ubuntu Server
+Siga os passos abaixo para instalar e configurar o Suricata IDS no seu Ubuntu Server.
+
+1️⃣ Adicionar o Repositório e Instalar o Suricata
+Abra o terminal e execute os seguintes comandos:
+
+bash
+Copiar
+Editar
+# Adicionar o repositório oficial do Suricata
 sudo add-apt-repository ppa:oisf/suricata-stable
+
+# Atualizar os pacotes do sistema
 sudo apt-get update
+
+# Instalar o Suricata
 sudo apt-get install suricata -y
-Baixe e extraia o conjunto de regras do Emerging Threats Suricata:
+2️⃣ Baixar e Configurar as Regras do Emerging Threats
+Agora, baixe e extraia o conjunto de regras Emerging Threats:
+
+bash
+Copiar
+Editar
+# Baixar as regras do Emerging Threats para Suricata 6.0.8
 cd /tmp/ && curl -LO https://rules.emergingthreats.net/open/suricata-6.0.8/emerging.rules.tar.gz
+
+# Extrair as regras e mover para o diretório correto
 sudo tar -xvzf emerging.rules.tar.gz && sudo mv rules/*.rules /etc/suricata/rules/
+
+# Ajustar as permissões das regras
 sudo chmod 640 /etc/suricata/rules/*.rules
-Modifique as configurações do Suricata no arquivo /etc/suricata/suricata.yaml e defina as seguintes variáveis:
+3️⃣ Configurar o Suricata
+Edite o arquivo de configuração do Suricata:
+
+bash
+Copiar
+Editar
+sudo nano /etc/suricata/suricata.yaml
+Adicione ou modifique as seguintes linhas:
+
+yaml
+Copiar
+Editar
+# Definir a rede interna (substitua <UBUNTU_IP> pelo IP real da máquina Ubuntu)
 HOME_NET: "<UBUNTU_IP>"
 EXTERNAL_NET: "any"
 
+# Caminho das regras do Suricata
 default-rule-path: /etc/suricata/rules
 rule-files:
-- "*.rules"
+  - "*.rules"
 
-# Global stats configuration
+# Configuração de estatísticas globais
 stats:
-enabled: Yes
+  enabled: Yes
 
-# Linux high speed capture support
+# Configuração do Suricata para capturar pacotes na interface de rede principal
 af-packet:
   - interface: eth0
-Reinicie o serviço Suricata:
+Salve e saia (CTRL + X, Y e Enter).
+
+4️⃣ Reiniciar o Suricata
+Após configurar, reinicie o Suricata para aplicar as mudanças:
+
+bash
+Copiar
+Editar
 sudo systemctl restart suricata
+✅ Pronto! Agora o Suricata IDS está instalado e configurado no seu Ubuntu Server. 🚀
+
+📌 Dica Extra: Para verificar se o Suricata está rodando corretamente, use o comando:
+
+bash
+Copiar
+Editar
+sudo systemctl status suricata
+Se precisar de mais ajustes, me avise! 🔥
+
+
+
+
+
+
+
+
