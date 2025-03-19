@@ -1,0 +1,26 @@
+Instalando o Suricata IDS no Ubuntu Server
+Instale o Suricata no endpoint do Ubuntu. Testamos esse processo com a versão 6.0.8 e pode levar algum tempo:
+sudo add-apt-repository ppa:oisf/suricata-stable
+sudo apt-get update
+sudo apt-get install suricata -y
+Baixe e extraia o conjunto de regras do Emerging Threats Suricata:
+cd /tmp/ && curl -LO https://rules.emergingthreats.net/open/suricata-6.0.8/emerging.rules.tar.gz
+sudo tar -xvzf emerging.rules.tar.gz && sudo mv rules/*.rules /etc/suricata/rules/
+sudo chmod 640 /etc/suricata/rules/*.rules
+Modifique as configurações do Suricata no arquivo /etc/suricata/suricata.yaml e defina as seguintes variáveis:
+HOME_NET: "<UBUNTU_IP>"
+EXTERNAL_NET: "any"
+
+default-rule-path: /etc/suricata/rules
+rule-files:
+- "*.rules"
+
+# Global stats configuration
+stats:
+enabled: Yes
+
+# Linux high speed capture support
+af-packet:
+  - interface: eth0
+Reinicie o serviço Suricata:
+sudo systemctl restart suricata
